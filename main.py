@@ -1,13 +1,11 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
-from flask_talisman import Talisman
 import json
 import os
 from urllib.parse import unquote
 
 app = Flask(__name__)
 CORS(app)  # Включаем CORS для всего приложения
-Talisman(app)  # Включаем Talisman для обеспечения безопасности
 
 # Загружаем вопросы из JSON-файла
 def load_questions():
@@ -38,4 +36,4 @@ def find_answer(question):
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(ssl_context=('path/to/ssl/cert.pem', 'path/to/ssl/key.pem'), debug=True, threaded=True)
+    app.run(debug=True, threaded=True)
