@@ -1,12 +1,13 @@
 from flask import Flask, jsonify
 from flask_cors import CORS
+from flask_talisman import Talisman
 import json
 import os
 from urllib.parse import unquote
 
 app = Flask(__name__)
 CORS(app)  # Включаем CORS для всего приложения
-
+Talisman(app)  # Включаем Talisman для обеспечения безопасности
 
 # Загружаем вопросы из JSON-файла
 def load_questions():
@@ -17,20 +18,18 @@ def load_questions():
         questions = json.load(file)
     return questions
 
-
 questions = load_questions()
-
 
 @app.route('/<question>', methods=['GET'])
 def find_answer(question):
     try:
         question_text = unquote(question)  # Декодируем URL-encoded строку
-
+        
         if not question_text:
             return jsonify({"error": "Question is required"}), 400
-
+        
         match = next((q for q in questions if q['question'] == question_text), None)
-
+        
         if match:
             return jsonify({"answer": match['correct_answer']}), 200
         else:
@@ -38,6 +37,5 @@ def find_answer(question):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
 if __name__ == '__main__':
-    app.run(debug=False,threaded=True, host='0.0.0.0', port=int(os.environ.get("PORT", 8080)))
+    app.run(ssl_context=('path/to/ssl/cert.pem', 'path/to/ssl/key.pem'), debug=True, threaded=True)
