@@ -40,4 +40,4 @@ def find_answer(question):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, threaded=True)
+    app.run(debug=False,threaded=True, host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))
